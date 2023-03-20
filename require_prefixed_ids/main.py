@@ -2,9 +2,13 @@ import argparse
 from typing import List
 
 
-def print_arguments(arguments: List[str]):
-    for argument in arguments:
-        print(argument)
+def print_arguments(filenames: List[str]):
+    for filename in filenames:
+        i = __import__(filename)
+        print(dir(i))
+
+    # suggest `id = CustomShortUUID(.....)` in the output
+    # try and make it generic, algorithm based instead of a hardcoded list.
 
 
 def main():
