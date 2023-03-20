@@ -4,7 +4,7 @@ from typing import List
 
 def print_arguments(filenames: List[str]):
     for filename in filenames:
-        filename = filename.replace(".py", "").replace("/", ".")
+        filename = "."+filename.replace(".py", "").replace("/", ".")
         i = __import__(filename)
         print(dir(i))
 
