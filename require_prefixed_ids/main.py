@@ -1,7 +1,8 @@
 import argparse
+from typing import List
 
 
-def print_arguments(arguments: list[str]):
+def print_arguments(arguments: List[str]):
     for argument in arguments:
         print(argument)
 
