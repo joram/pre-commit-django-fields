@@ -1,6 +1,3 @@
-import argparse
-from typing import List
-
 def main():
     print("Running main.py")
 
