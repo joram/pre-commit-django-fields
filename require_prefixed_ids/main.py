@@ -1,10 +1,9 @@
 import argparse
-import django
+from django.apps import apps
 from typing import List
 
 
 def get_django_models(filenames: List[str]):
-    from django.apps import apps
     print(apps.all_models.keys())
     for app_name in apps.all_models.keys():
         for model in apps.get_app_config(app_name).get_models():
