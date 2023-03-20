@@ -1,6 +1,9 @@
 import argparse
 from django.apps import apps
+from django import setup
 from typing import List
+
+setup()
 
 
 def get_django_models(filenames: List[str]):
