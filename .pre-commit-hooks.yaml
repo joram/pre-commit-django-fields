@@ -1,0 +1,6 @@
+-   id: require-prefixed-ids
+    name: Require prefixed IDs
+    description: This hook requires that all IDs in the document are prefixed with a string.
+    entry: require-prefixed-ids
+    language: python
+    types: [text]
