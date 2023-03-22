@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pre-commit-django-fields"
-version = "v1.0.3"
+version = "v1.0.6"
 description = ""
 authors = ["John Oram <john@oram.ca>"]
 license = "MIT"
@@ -11,7 +11,7 @@ packages = [{include = "pre_commit_django_fields"}]
 python = "^3.10"
 
 [tool.poetry.scripts]
-pre-commit-django-fields = "pre-commit-django-fields.main:main"
+pre-commit-django-fields = "pre_commit_django_fields.main:main"
 
 [build-system]
 requires = ["poetry-core"]
