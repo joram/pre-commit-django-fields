@@ -1,0 +1,44 @@
+[tool.black]
+line-length = 100
+
+[tool.poetry]
+name = "pre-commit-django-fields"
+version = "1.0.2"
+description = "A Python utility / library to validate django fields."
+authors = ["John Oram <john@oram.ca>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["Refactor", "Lint"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8.0"
+pipreqs = {version = "*", optional = true}
+requirementslib = {version = "*", optional = true}
+colorama = {version = ">=0.4.3", optional = true}
+setuptools = {version = "*", optional = true}
+
+[tool.poetry.extras]
+colors = ["colorama"]
+plugins = ["setuptools"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
