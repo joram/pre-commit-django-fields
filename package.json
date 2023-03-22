@@ -1,0 +1,5 @@
+{
+    "name": "pre-commit-django-fields",
+    "description": "validate django fields",
+    "version": "1.0.1"
+}
