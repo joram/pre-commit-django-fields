@@ -70,5 +70,10 @@ def erronious_fields():
 
 
 def main():
+    found_erronious_fields = False
     for model_class, field_class_name, required_classes in erronious_fields():
-        print(f"id for {model_class} is {field_class_name}. Must be one of {required_classes}")
+        print(f"ERROR: id for {model_class} is {field_class_name}. Must be one of {required_classes}")
+        found_erronious_fields = True
+
+    if found_erronious_fields:
+        exit(1)

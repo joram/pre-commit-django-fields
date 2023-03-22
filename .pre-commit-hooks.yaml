@@ -1,5 +1,5 @@
 -   id: pre-commit-django-fields
-    name: pre-commit django fields
+    name: django fields
     description: This hook requires that all IDs in the document are prefixed with a string.
     entry: pre-commit-django-fields
     language: system
