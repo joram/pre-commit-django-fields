@@ -1,6 +1,6 @@
--   id: require-prefixed-ids
-    name: Require prefixed IDs
+-   id: pre-commit-django-fields
+    name: pre-commit django fields
     description: This hook requires that all IDs in the document are prefixed with a string.
-    entry: require-prefixed-ids
+    entry: pre-commit-django-fields
     language: system
     types: [text]

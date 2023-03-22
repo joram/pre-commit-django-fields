@@ -35,10 +35,6 @@ requirementslib = {version = "*", optional = true}
 colorama = {version = ">=0.4.3", optional = true}
 setuptools = {version = "*", optional = true}
 
-[tool.poetry.extras]
-colors = ["colorama"]
-plugins = ["setuptools"]
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
