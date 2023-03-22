@@ -66,13 +66,13 @@ def erronious_fields():
                 continue
 
             if field_class_name not in required_classes:
-                yield model_class, field_class_name, required_classes
+                yield model_class.__name__, field_class_name, required_classes
 
 
 def main():
     found_erronious_fields = False
-    for model_class, field_class_name, required_classes in erronious_fields():
-        print(f"ERROR: id for {model_class} is {field_class_name}. Must be one of {required_classes}")
+    for model_class_name, field_class_name, required_classes in erronious_fields():
+        print(f"ERROR: id for {model_class_name} is {field_class_name}. Must be one of {required_classes}")
         found_erronious_fields = True
 
     if found_erronious_fields:
