@@ -1,27 +1,38 @@
-import argparse
+#!/usr/bin/env python3
+import ast
 import json
 import os
+from dataclasses import dataclass
+from pprint import pprint
 from typing import List
 
-from django import setup
-from django.apps import apps
+@dataclass
+class Field:
+    name: str
+    field_type: str
+    class_name: str
+    filename: str
+    lineno: int
 
-setup()
+
+@dataclass
+class Configuration:
+    fields: List[dict]
+    ignore_models: List[str]
+
 
 CONFIG_FILENAME = ".pre-commit-config-django-fields.json"
-DEFAULT_CONFIG = {
-    "fields": [
-        {
-            "name": "id",
-            "required_classes": ["UUIDField"]
-        },
-    ],
-    "ignore_models": [],
-}
-
-
+DEFAULT_CONFIG = Configuration(
+    fields=[{
+        "name": "id",
+        "required_classes": ["UUIDField1"]
+    }],
+    ignore_models=[],
+)
 _config = None
-def config():
+
+
+def get_configuration():
     global _config
     if _config is not None:
         return _config
@@ -34,46 +45,75 @@ def config():
     return _config
 
 
-def required_field_classes():
-    file_config = config()
-    dict_config = {}
-    for c in file_config["fields"]:
-        dict_config[c["name"]] = c["required_classes"]
-    return dict_config
+class Analyzer(ast.NodeVisitor):
+    def __init__(self):
+        self.current_filename = None
+        self.import_django_model_base_class = False
+        self.fields: List[Field] = []
+
+    def visit_ImportFrom(self, node: ast.ImportFrom):
+
+        if node.module == "django.db.models":
+            for name in node.names:
+                if name.name == "Model" and name.asname is None:
+                    self.import_django_model_base_class = True
+
+        if node.module == "django.db":
+            for name in node.names:
+                if name.name == "models" and name.asname is None:
+                    self.import_django_model_base_class = True
+
+        self.generic_visit(node)
+
+    def visit_ClassDef(self, node: ast.ClassDef):
+        if self.import_django_model_base_class:
+            for n in node.body:
+                class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
+                line_number = n.lineno
+                for target in n.targets:
+                    self.fields.append(Field(
+                        name=target.id,
+                        field_type=class_name,
+                        class_name=node.name,
+                        lineno=line_number,
+                        filename=self.current_filename,
+                    ))
+
+        self.generic_visit(node)
+
+    def set_filename(self, filename):
+        self.current_filename = filename
 
 
-def get_django_models():
-    for app_name in apps.all_models.keys():
-        app = apps.get_app_config(app_name)
-        if "site-packages" in app.path:
+def find_fields(filenames: str) -> List[Field]:
+    analyzer = Analyzer()
+    for filename in filenames:
+        with open(filename, "r") as f:
+            ast_tree = ast.parse(f.read(), filename)
+            analyzer.set_filename(filename)
+            analyzer.visit(ast_tree)
+            return analyzer.fields
+
+
+def find_errors(filenames: str, config: Configuration) -> List[Field]:
+    fields = find_fields(filenames)
+    errors = []
+    for field in fields:
+        if field.class_name in config.ignore_models:
             continue
-        for model_class in app.get_models():
-            yield model_class
+        for field_config in config.fields:
+            if field.name == field_config["name"]:
+                if field.field_type not in field_config["required_classes"]:
+                    errors.append(field)
+    return errors
 
 
-def erronious_fields():
-    model_classes = get_django_models()
-    for model_class in model_classes:
-        model_name = model_class.__name__
-        if model_name in config()["ignore_models"]:
-            continue
+if __name__ == "__main__":
+    config = get_configuration()
+    errors = find_errors(["tests/example_models_1.py"], config)
 
-        for field in model_class._meta.fields:
-            field_class_name = field.__class__.__name__
-            field_name = field.name
-            required_classes = required_field_classes().get(field_name)
-            if required_classes is None:
-                continue
-
-            if field_class_name not in required_classes:
-                yield model_class.__name__, field_class_name, required_classes
-
-
-def main():
-    found_erronious_fields = False
-    for model_class_name, field_class_name, required_classes in erronious_fields():
-        print(f"ERROR: id for {model_class_name} is {field_class_name}. Must be one of {required_classes}")
-        found_erronious_fields = True
-
-    if found_erronious_fields:
+    for error in errors:
+        print(f"ERROR: {error.filename}:{error.lineno} - {error.class_name}.{error.name} is not a {error.field_type}")
+    if len(errors) > 0:
         exit(1)
+
