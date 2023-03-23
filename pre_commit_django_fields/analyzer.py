@@ -31,6 +31,8 @@ class Analyzer(ast.NodeVisitor):
                 continue
             if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
                 continue
+            if isinstance(n, ast.Constant):
+                continue
             class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
             line_number = n.lineno
             if isinstance(n, ast.AnnAssign):
