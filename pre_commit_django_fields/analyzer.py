@@ -31,10 +31,9 @@ class Analyzer(ast.NodeVisitor):
                 continue
             if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
                 continue
-            if isinstance(n.value, ast.Constant):
-                continue
-            if isinstance(n.value, ast.List):
-                continue
+            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant]:
+                if isinstance(n.value, ignorable_type):
+                    continue
             if n.value is None:
                 continue
 
