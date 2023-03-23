@@ -4,10 +4,7 @@ import ast
 import json
 import os
 from dataclasses import dataclass
-from pprint import pprint
 from typing import List, Optional, Sequence
-
-from identify.identify import FILE
 
 
 @dataclass
