@@ -38,7 +38,12 @@ class Analyzer(ast.NodeVisitor):
             if n.value is None:
                 continue
 
-            class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
+            try:
+                class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
+            except AttributeError:
+                print(n.value)
+                raise
+
             line_number = n.lineno
             if isinstance(n, ast.AnnAssign):
                 self.fields.append(Field(
