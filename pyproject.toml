@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pre-commit-django-fields"
-version = "v1.0.23"
+version = "v1.0.24"
 description = ""
 authors = ["John Oram <john@oram.ca>"]
 license = "MIT"
