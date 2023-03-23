@@ -20,6 +20,7 @@ class Field:
 class Configuration:
     fields: List[dict]
     ignore_models: List[str]
+    verify_model_inherits_from_django_model: bool = True
 
 
 CONFIG_FILENAME = ".pre-commit-config-django-fields.json"
@@ -50,6 +51,7 @@ class Analyzer(ast.NodeVisitor):
     def __init__(self):
         self.current_filename = None
         self.import_django_model_base_class = False
+        self.verify_model_inherits_from_django_model = True
         self.fields: List[Field] = []
 
     def visit_ImportFrom(self, node: ast.ImportFrom):
@@ -67,30 +69,30 @@ class Analyzer(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ast.ClassDef):
-        if self.import_django_model_base_class:
-            for n in node.body:
-                print(dir(n))
-                if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
-                    continue
-                class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
-                line_number = n.lineno
-                if isinstance(n, ast.AnnAssign):
+        for n in node.body:
+            if self.verify_model_inherits_from_django_model and not self.import_django_model_base_class:
+                continue
+            if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
+                continue
+            class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
+            line_number = n.lineno
+            if isinstance(n, ast.AnnAssign):
+                self.fields.append(Field(
+                    name=n.target.id,
+                    field_type=class_name,
+                    class_name=node.name,
+                    lineno=line_number,
+                    filename=self.current_filename,
+                ))
+            else:
+                for target in n.targets:
                     self.fields.append(Field(
-                        name=n.target.id,
+                        name=target.id,
                         field_type=class_name,
                         class_name=node.name,
                         lineno=line_number,
                         filename=self.current_filename,
                     ))
-                else:
-                    for target in n.targets:
-                        self.fields.append(Field(
-                            name=target.id,
-                            field_type=class_name,
-                            class_name=node.name,
-                            lineno=line_number,
-                            filename=self.current_filename,
-                        ))
 
         self.generic_visit(node)
 
@@ -98,8 +100,9 @@ class Analyzer(ast.NodeVisitor):
         self.current_filename = filename
 
 
-def find_fields(filenames: str) -> List[Field]:
+def find_fields(filenames: str, verify_model_inherits_from_django_model:bool=True) -> List[Field]:
     analyzer = Analyzer()
+    analyzer.verify_model_inherits_from_django_model = verify_model_inherits_from_django_model
     fields = []
     for filename in filenames:
         if not filename.endswith(".py"):
@@ -111,8 +114,12 @@ def find_fields(filenames: str) -> List[Field]:
             fields += analyzer.fields
     return fields
 
+
 def find_errors(filenames: str, config: Configuration) -> List[Field]:
-    fields = find_fields(filenames)
+    fields = find_fields(
+        filenames=filenames,
+        verify_model_inherits_from_django_model=config.verify_model_inherits_from_django_model,
+    )
     errors = []
     for field in fields:
         if field.class_name in config.ignore_models:
