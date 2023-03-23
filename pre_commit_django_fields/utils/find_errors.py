@@ -14,9 +14,9 @@ def find_errors(filenames: str, config: Configuration) -> List[Union[MissingFiel
         if field.class_name in config.ignore_models:
             continue
         for field_config in config.fields:
-            if field.name == field_config.name:
-                if field.field_type not in field_config.required_field_classes:
-                    field.expected_field_classes = field_config.required_field_classes
+            if field.name == field_config["name"]:
+                if field.field_type not in field_config["required_field_classes"]:
+                    field.expected_field_classes = field_config["required_field_classes"]
                     errors.append(field)
 
     # find fields that are missing
