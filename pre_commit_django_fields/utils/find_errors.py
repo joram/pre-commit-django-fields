@@ -7,10 +7,10 @@ from pre_commit_django_fields.utils.find_fields import find_fields
 def find_errors(filenames: str, config: Configuration) -> List[Union[MissingField, Field]]:
     errors = []
     fields = find_fields(filenames=filenames)
-    print(fields)
 
     # find fields that don't match the configuration
     for field in fields:
+        print(field)
         if field.class_name in config.ignore_models:
             continue
         for field_config in config.fields:
