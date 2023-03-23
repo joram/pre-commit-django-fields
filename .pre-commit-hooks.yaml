@@ -3,4 +3,4 @@
     description: This hook requires that all IDs in the document are prefixed with a string.
     entry: pre-commit-django-fields
     language: python
-    language_version: python3.12
+    language_version: python3.10
