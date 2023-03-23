@@ -40,7 +40,7 @@ def get_configuration():
 
     if os.path.exists(CONFIG_FILENAME):
         with open(CONFIG_FILENAME) as f:
-            _config = json.load(f)
+            _config = Configuration(**json.load(f))
     else:
         _config = DEFAULT_CONFIG
     return _config
@@ -69,16 +69,28 @@ class Analyzer(ast.NodeVisitor):
     def visit_ClassDef(self, node: ast.ClassDef):
         if self.import_django_model_base_class:
             for n in node.body:
+                print(dir(n))
+                if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
+                    continue
                 class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
                 line_number = n.lineno
-                for target in n.targets:
+                if isinstance(n, ast.AnnAssign):
                     self.fields.append(Field(
-                        name=target.id,
+                        name=n.target.id,
                         field_type=class_name,
                         class_name=node.name,
                         lineno=line_number,
                         filename=self.current_filename,
                     ))
+                else:
+                    for target in n.targets:
+                        self.fields.append(Field(
+                            name=target.id,
+                            field_type=class_name,
+                            class_name=node.name,
+                            lineno=line_number,
+                            filename=self.current_filename,
+                        ))
 
         self.generic_visit(node)
 
@@ -98,7 +110,6 @@ def find_fields(filenames: str) -> List[Field]:
             analyzer.visit(ast_tree)
             fields += analyzer.fields
     return fields
-
 
 def find_errors(filenames: str, config: Configuration) -> List[Field]:
     fields = find_fields(filenames)
