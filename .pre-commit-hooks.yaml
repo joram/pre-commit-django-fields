@@ -4,3 +4,5 @@
     entry: pre-commit-django-fields
     language: python
     language_version: python3
+    additional_dependencies:
+        - colorama==0.4.4
