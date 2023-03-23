@@ -89,6 +89,8 @@ class Analyzer(ast.NodeVisitor):
 def find_fields(filenames: str) -> List[Field]:
     analyzer = Analyzer()
     for filename in filenames:
+        if not filename.endswith(".py"):
+            continue
         with open(filename, "r") as f:
             ast_tree = ast.parse(f.read(), filename)
             analyzer.set_filename(filename)
