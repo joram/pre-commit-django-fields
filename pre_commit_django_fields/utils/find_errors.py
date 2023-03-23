@@ -10,7 +10,6 @@ def find_errors(filenames: str, config: Configuration) -> List[Union[MissingFiel
 
     # find fields that don't match the configuration
     for field in fields:
-        print(field)
         if field.class_name in config.ignore_models:
             continue
         for field_config in config.fields:
@@ -28,13 +27,13 @@ def find_errors(filenames: str, config: Configuration) -> List[Union[MissingFiel
 
             found_field = False
             for field in fields:
-                if field.name == field_config.name:
+                if field.name == field_config["name"]:
                     found_field = True
                     break
 
             if not found_field:
                 errors.append(MissingField(
-                    name=field_config.name,
+                    name=field_config["name"],
                     class_name=class_name,
                     lineno=0,
                     filename=filename,
