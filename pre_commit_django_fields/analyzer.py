@@ -31,10 +31,13 @@ class Analyzer(ast.NodeVisitor):
                 continue
             if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
                 continue
+
+            skip = False
             for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant]:
                 if isinstance(n.value, ignorable_type):
-                    continue
-            if n.value is None:
+                    skip = True
+                    break
+            if skip or n.value is None:
                 continue
 
             try:
