@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
+import argparse
 import ast
 import json
 import os
 from dataclasses import dataclass
 from pprint import pprint
-from typing import List
+from typing import List, Optional, Sequence
+
+from identify.identify import FILE
+
 
 @dataclass
 class Field:
@@ -108,12 +112,17 @@ def find_errors(filenames: str, config: Configuration) -> List[Field]:
     return errors
 
 
-if __name__ == "__main__":
+def main(argv: Optional[Sequence[str]] = None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filenames", nargs="*", help="Filenames to process")
+    args = parser.parse_args(argv)
     config = get_configuration()
-    errors = find_errors(["tests/example_models_1.py"], config)
+
+    errors = find_errors(args.filenames, config)
 
     for error in errors:
         print(f"ERROR: {error.filename}:{error.lineno} - {error.class_name}.{error.name} is not a {error.field_type}")
+
     if len(errors) > 0:
         exit(1)
 
