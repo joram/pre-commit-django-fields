@@ -33,7 +33,7 @@ class Analyzer(ast.NodeVisitor):
                 continue
 
             skip = False
-            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name, ast.Attribute]:
+            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name, ast.Attribute, ast.BinOp]:
                 if isinstance(n.value, ignorable_type):
                     skip = True
                     break
