@@ -33,19 +33,14 @@ class Analyzer(ast.NodeVisitor):
                 continue
 
             skip = False
-            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name]:
+            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name, ast.Attribute]:
                 if isinstance(n.value, ignorable_type):
                     skip = True
                     break
             if skip or n.value is None:
                 continue
 
-            try:
-                class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
-            except AttributeError:
-                print(n.value)
-                raise
-
+            class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
             line_number = n.lineno
             if isinstance(n, ast.AnnAssign):
                 self.fields.append(Field(
