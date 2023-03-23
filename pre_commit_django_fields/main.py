@@ -88,6 +88,7 @@ class Analyzer(ast.NodeVisitor):
 
 def find_fields(filenames: str) -> List[Field]:
     analyzer = Analyzer()
+    fields = []
     for filename in filenames:
         if not filename.endswith(".py"):
             continue
@@ -95,7 +96,8 @@ def find_fields(filenames: str) -> List[Field]:
             ast_tree = ast.parse(f.read(), filename)
             analyzer.set_filename(filename)
             analyzer.visit(ast_tree)
-            return analyzer.fields
+            fields += analyzer.fields
+    return fields
 
 
 def find_errors(filenames: str, config: Configuration) -> List[Field]:
