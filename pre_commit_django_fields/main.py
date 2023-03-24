@@ -33,6 +33,7 @@ def get_configuration():
     if os.path.exists(CONFIG_FILENAME):
         with open(CONFIG_FILENAME) as f:
             _config = Configuration(**json.load(f))
+            _config.fields = [FieldConfiguration(**field) for field in _config.fields]
     else:
         _config = DEFAULT_CONFIG
     return _config

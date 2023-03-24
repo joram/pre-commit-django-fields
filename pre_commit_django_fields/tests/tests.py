@@ -29,7 +29,7 @@ def test_find_errors__wrong_field__returns_MissingField_error():
         fields=[
             FieldConfiguration(
                 name="id",
-                required_field_classes=["UUIDField"],
+                required_classes=["UUIDField"],
             ),
         ],
         ignore_models=["User"],
@@ -51,7 +51,7 @@ def test_find_errors__wrong_field__returns_Field_error():
         fields=[
             FieldConfiguration(
                 name="id",
-                required_field_classes=["UUIDField"],
+                required_classes=["UUIDField"],
             ),
         ],
         ignore_models=["User"],

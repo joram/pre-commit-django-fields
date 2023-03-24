@@ -18,7 +18,7 @@ class Field:
 
 @dataclass
 class FieldConfiguration:
-    required_field_classes: List[str]
+    required_classes: List[str]
     parent_classes: Optional[List[str]] = None
     name: str = "id"
 
