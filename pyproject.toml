@@ -1,0 +1,31 @@
+[project]
+requires-python = ">=3.10"
+
+[tool.poetry]
+name = "pre-commit-django-fields"
+version = "v1.0.25"
+description = ""
+authors = ["John Oram <john@oram.ca>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "pre_commit_django_fields"}]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+pre-commit-django-fields = "pre_commit_django_fields.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

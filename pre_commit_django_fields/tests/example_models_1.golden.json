@@ -1,0 +1,42 @@
+[
+  {
+    "name": "id",
+    "field_type": "UUIDField",
+    "class_name": "ExampleModel",
+    "filename": "example_models_1.py",
+    "expected_field_classes": null,
+    "lineno": 5
+  },
+  {
+    "name": "name",
+    "field_type": "CharField",
+    "class_name": "ExampleModel",
+    "filename": "example_models_1.py",
+    "expected_field_classes": null,
+    "lineno": 6
+  },
+  {
+    "name": "description",
+    "field_type": "TextField",
+    "class_name": "ExampleModel",
+    "filename": "example_models_1.py",
+    "expected_field_classes": null,
+    "lineno": 7
+  },
+  {
+    "name": "created_at",
+    "field_type": "DateTimeField",
+    "class_name": "ExampleModel",
+    "filename": "example_models_1.py",
+    "expected_field_classes": null,
+    "lineno": 8
+  },
+  {
+    "name": "updated_at",
+    "field_type": "DateTimeField",
+    "class_name": "ExampleModel",
+    "filename": "example_models_1.py",
+    "expected_field_classes": null,
+    "lineno": 9
+  }
+]
