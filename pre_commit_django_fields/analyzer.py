@@ -52,19 +52,17 @@ class Analyzer(ast.NodeVisitor):
                 ))
             else:
                 for target in n.targets:
-                    try:
-                        self.fields.append(Field(
-                            name=target.id,
-                            field_type=class_name,
-                            class_name=node.name,
-                            lineno=line_number,
-                            filename=self.current_filename,
-                        ))
-                    except AttributeError:
-                        print(dir(target))
-                        print(target.attr, dir(target.attr))
-                        print(target.value, dir(target.value))
-                        raise
+                    if isinstance(target, ast.Attribute):
+                        name = target.attr.id
+                    else:
+                        name = target.id
+                    self.fields.append(Field(
+                        name=name,
+                        field_type=class_name,
+                        class_name=node.name,
+                        lineno=line_number,
+                        filename=self.current_filename,
+                    ))
 
         self.generic_visit(node)
 
