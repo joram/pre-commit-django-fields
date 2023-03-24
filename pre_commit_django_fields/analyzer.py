@@ -42,23 +42,26 @@ class Analyzer(ast.NodeVisitor):
 
             class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
             line_number = n.lineno
-            if isinstance(n, ast.AnnAssign):
-                self.fields.append(Field(
-                    name=n.target.id,
-                    field_type=class_name,
-                    class_name=node.name,
-                    lineno=line_number,
-                    filename=self.current_filename,
-                ))
-            else:
-                for target in n.targets:
+            try:
+                if isinstance(n, ast.AnnAssign):
                     self.fields.append(Field(
-                        name=target.id,
+                        name=n.target.id,
                         field_type=class_name,
                         class_name=node.name,
                         lineno=line_number,
                         filename=self.current_filename,
                     ))
+                else:
+                    for target in n.targets:
+                        self.fields.append(Field(
+                            name=target.id,
+                            field_type=class_name,
+                            class_name=node.name,
+                            lineno=line_number,
+                            filename=self.current_filename,
+                        ))
+            except AttributeError:
+                pass
 
         self.generic_visit(node)
 
