@@ -23,6 +23,8 @@ def find_errors(filenames: str, config: Configuration) -> List[Union[MissingFiel
     for field in fields:
         found_class_names.add((field.class_name, field.filename))
     for class_name, filename in found_class_names:
+        if class_name in config.ignore_models:
+            continue
         for field_config in config.fields:
 
             found_field = False
