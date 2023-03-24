@@ -62,6 +62,8 @@ class Analyzer(ast.NodeVisitor):
                         ))
                     except AttributeError:
                         print(dir(target))
+                        print(target.attr, dir(target.attr))
+                        print(target.value, dir(target.value))
                         raise
 
         self.generic_visit(node)
