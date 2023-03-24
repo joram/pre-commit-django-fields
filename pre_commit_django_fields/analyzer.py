@@ -53,7 +53,7 @@ class Analyzer(ast.NodeVisitor):
             else:
                 for target in n.targets:
                     if isinstance(target, ast.Attribute):
-                        name = target.attr.id
+                        name = target.value.id
                     else:
                         name = target.id
                     self.fields.append(Field(
