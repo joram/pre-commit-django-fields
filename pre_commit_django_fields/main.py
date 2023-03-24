@@ -14,7 +14,7 @@ CONFIG_FILENAME = ".pre-commit-config-django-fields.json"
 DEFAULT_CONFIG = Configuration(
     fields=[FieldConfiguration(
         name="id",
-        required_field_classes=["UUIDField"],
+        required_classes=["UUIDField"],
         parent_classes=[
             "django.db.models.Model",
             "core.utils.abstract_models.base_abstract_models.BaseModel",
