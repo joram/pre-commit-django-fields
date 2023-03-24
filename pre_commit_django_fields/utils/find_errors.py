@@ -26,6 +26,8 @@ def find_errors(filenames: str, config: Configuration) -> List[Union[MissingFiel
         if class_name in config.ignore_models:
             continue
         for field_config in config.fields:
+            if not field_config.required_explicit_definition:
+                continue
 
             found_field = False
             for field in fields:

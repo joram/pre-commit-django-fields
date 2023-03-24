@@ -21,6 +21,7 @@ class FieldConfiguration:
     required_classes: List[str]
     parent_classes: Optional[List[str]] = None
     name: str = "id"
+    required_explicit_definition: bool = False
 
 
 @dataclass
