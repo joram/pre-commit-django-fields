@@ -26,43 +26,48 @@ class Analyzer(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ast.ClassDef):
-        for n in node.body:
-            if self.verify_model_inherits_from_django_model and not self.import_django_model_base_class:
-                continue
-            if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
-                continue
+        try:
+            for n in node.body:
+                if self.verify_model_inherits_from_django_model and not self.import_django_model_base_class:
+                    continue
+                if not isinstance(n, ast.AnnAssign) and not isinstance(n, ast.Assign):
+                    continue
 
-            skip = False
-            for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name, ast.Attribute, ast.BinOp]:
-                if isinstance(n.value, ignorable_type):
-                    skip = True
-                    break
-            if skip or n.value is None:
-                continue
+                skip = False
+                for ignorable_type in [ast.List, ast.Tuple, ast.Dict, ast.Constant, ast.Name, ast.Attribute, ast.BinOp]:
+                    if isinstance(n.value, ignorable_type):
+                        skip = True
+                        break
+                if skip or n.value is None:
+                    continue
 
-            class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
-            line_number = n.lineno
-            if isinstance(n, ast.AnnAssign):
-                self.fields.append(Field(
-                    name=n.target.id,
-                    field_type=class_name,
-                    class_name=node.name,
-                    lineno=line_number,
-                    filename=self.current_filename,
-                ))
-            else:
-                for target in n.targets:
-                    if isinstance(target, ast.Attribute):
-                        name = target.value.id
-                    else:
-                        name = target.id
+                class_name = n.value.func.attr if hasattr(n.value.func, "attr") else n.value.func.id
+                line_number = n.lineno
+                if isinstance(n, ast.AnnAssign):
                     self.fields.append(Field(
-                        name=name,
+                        name=n.target.id,
                         field_type=class_name,
                         class_name=node.name,
                         lineno=line_number,
                         filename=self.current_filename,
                     ))
+                else:
+                    for target in n.targets:
+                        if isinstance(target, ast.Attribute):
+                            name = target.value.id
+                        else:
+                            name = target.id
+                        self.fields.append(Field(
+                            name=name,
+                            field_type=class_name,
+                            class_name=node.name,
+                            lineno=line_number,
+                            filename=self.current_filename,
+                        ))
+        except Exception as e:
+            print("#"*5+" "+self.current_filename+" "+"#"*5)
+            print(e)
+            pass
 
         self.generic_visit(node)
 
